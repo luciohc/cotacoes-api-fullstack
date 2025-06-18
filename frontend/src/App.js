@@ -8,14 +8,14 @@ function App() {
   const [novoValor, setNovoValor] = useState('');
 
   const carregarCotacoes = () => {
-    $.get('https://SEU_BACKEND_RENDER.onrender.com/api/cotacoes', (data) => {
+    $.get('https://cotacoes-api-fullstack.onrender.com/api/cotacoes', (data) => {
       setCotacoes(data);
     });
   };
 
   const adicionarCotacao = () => {
     $.ajax({
-      url: 'https://SEU_BACKEND_RENDER.onrender.com/api/cotacoes',
+      url: 'https://cotacoes-api-fullstack.onrender.com/api/cotacoes',
       method: 'POST',
       contentType: 'application/json',
       data: JSON.stringify({ moeda: novaMoeda, valor: novoValor }),
@@ -59,7 +59,7 @@ function App() {
         <button
           className="btn btn-info me-2"
           onClick={() => {
-            $.get('https://SEU_BACKEND_RENDER.onrender.com/api/cotacoes/external/bcb', () => {
+            $.get('https://cotacoes-api-fullstack.onrender.com/api/cotacoes/external/bcb', () => {
               alert('Cotações do Banco Central salvas!');
               carregarCotacoes();
             }).fail(() => alert('Erro ao buscar cotação do BCB'));
@@ -71,7 +71,7 @@ function App() {
         <button
           className="btn btn-warning"
           onClick={() => {
-            $.get('https://SEU_BACKEND_RENDER.onrender.com/api/cotacoes/external/openex', () => {
+            $.get('https://cotacoes-api-fullstack.onrender.com/api/cotacoes/external/openex', () => {
               alert('Cotações do Open Exchange Rates salvas!');
               carregarCotacoes();
             }).fail(() => alert('Erro ao buscar cotação do OpenEx'));
