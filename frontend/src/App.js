@@ -154,6 +154,24 @@ function App() {
               return data;
             };
 
+            // Validação
+            if (!filtroMoeda.trim()) {
+              alert('Por favor, informe a moeda.');
+              return;
+            }
+            if (!filtroDataInicio.trim() || !filtroDataFim.trim()) {
+              alert('Por favor, informe a data de início e a data de fim.');
+              return;
+            }
+            if (!filtroPage.trim() || isNaN(filtroPage)) {
+              alert('Por favor, informe um número válido para a página.');
+              return;
+            }
+            if (!filtroLimit.trim() || isNaN(filtroLimit)) {
+              alert('Por favor, informe um número válido para o limite.');
+              return;
+            }
+
             const dataInicioFormatada = formatarData(filtroDataInicio);
             const dataFimFormatada = formatarData(filtroDataFim);
 
