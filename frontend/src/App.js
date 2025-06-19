@@ -69,6 +69,7 @@ function App() {
     document.getElementById("historicoCotacoes").innerHTML = '';
 
     $.get(url, (data) => {
+      setHistorico(data);
       let historicoHtml = "<h3 style='color: blue;'>Histórico de Cotações</h3>";
 
       if (data.length === 0) {
@@ -196,6 +197,36 @@ function App() {
         <button className="btn btn-info" onClick={buscarHistorico}>
           Buscar Histórico de Cotações (com filtros)
         </button>
+
+        <button
+          className="btn btn-secondary ms-2"
+          onClick={() => {
+            if (historico.length === 0) {
+              alert('Nenhum dado de histórico para exportar.');
+              return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "ID,Moeda,Valor,Data de Inserção\n";
+
+            historico.forEach(cotacao => {
+              const row = `${cotacao.id},${cotacao.moeda},${cotacao.valor},${new Date(cotacao.data_insercao).toLocaleString()}`;
+              csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "historico_cotacoes.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }}
+        >
+          Exportar Histórico (CSV)
+        </button>
+
+
       </div>
 
       {/* Tabela de cotações */}
