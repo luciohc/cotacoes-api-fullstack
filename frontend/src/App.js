@@ -137,7 +137,7 @@ function App() {
           ))}
         </tbody>
       </table>
-      <div id="historicoCotacoes" class="mt-4"></div>
+      <div id="historicoCotacoes" class="text-primary fw-bold mt-2"></div>
     </div>
   );
 }
