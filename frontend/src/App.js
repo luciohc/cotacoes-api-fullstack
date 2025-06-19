@@ -181,18 +181,26 @@ function App() {
             if (filtroMinValor && filtroMaxValor) url += `&minValor=${filtroMinValor}&maxValor=${filtroMaxValor}`;
 
             $.get(url, (data) => {
-              let historicoHtml = "<h3 style='color: blue;'>Histórico de Cotações</h3><table class='table table-striped'><tr><th>ID</th><th>Moeda</th><th>Valor</th><th>Data</th></tr>";
-              data.forEach(cotacao => {
-                historicoHtml += `<tr>
+              let historicoHtml = "<h3 style='color: blue;'>Histórico de Cotações</h3>";
+
+              if (data.length === 0) {
+                historicoHtml += "<div class='alert alert-warning'>Nenhum resultado encontrado para os filtros informados.</div>";
+              } else {
+                historicoHtml += "<table class='table table-striped'><tr><th>ID</th><th>Moeda</th><th>Valor</th><th>Data</th></tr>";
+                data.forEach(cotacao => {
+                  historicoHtml += `<tr>
         <td>${cotacao.id}</td>
         <td>${cotacao.moeda}</td>
         <td>${cotacao.valor}</td>
         <td>${new Date(cotacao.data_insercao).toLocaleString()}</td>
       </tr>`;
-              });
-              historicoHtml += "</table>";
+                });
+                historicoHtml += "</table>";
+              }
+
               document.getElementById("historicoCotacoes").innerHTML = historicoHtml;
             }).fail(() => alert('Erro ao buscar o histórico.'));
+
           }}
 
         >
