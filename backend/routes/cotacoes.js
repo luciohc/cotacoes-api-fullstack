@@ -51,29 +51,45 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Histórico de cotações
 router.get('/historico/:moeda', async (req, res) => {
   const { moeda } = req.params;
-  const { startDate, endDate } = req.query;
+  const {
+    startDate,
+    endDate,
+    minValor,
+    maxValor,
+    page = 1,
+    limit = 10
+  } = req.query;
 
   try {
     let query = 'SELECT * FROM cotacoes WHERE moeda = $1';
-    const params = [moeda];
+    const params = [moeda]  ;
+    let paramIndex = 2;
 
     if (startDate && endDate) {
-      query += ' AND data_insercao BETWEEN $2 AND $3';
+      query += ` AND data_insercao::date BETWEEN $${paramIndex} AND $${paramIndex + 1}`;
       params.push(startDate, endDate);
+      paramIndex += 2;
     }
 
-    query += ' ORDER BY data_insercao DESC';
+    if (minValor && maxValor) {
+      query += ` AND valor BETWEEN $${paramIndex} AND $${paramIndex + 1}`;
+      params.push(minValor, maxValor);
+      paramIndex += 2;
+    }
+
+    query += ` ORDER BY data_insercao DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+    params.push(limit, (page - 1) * limit);
 
     const result = await pool.query(query, params);
     res.json(result.rows);
   } catch (error) {
-    console.error('Erro ao buscar histórico de cotações:', error);
+    console.error('Erro ao buscar histórico:', error);
     res.status(500).json({ error: 'Erro ao buscar histórico de cotações' });
   }
 });
+
 
 
 // Delete

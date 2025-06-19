@@ -82,42 +82,43 @@ function App() {
         </button>
 
         <button
-          className="btn btn-info me-2"
+         
+          className="btn btn-info"
           onClick={() => {
             const moeda = prompt('Digite a moeda (ex: USD, EUR):');
             const startDate = prompt('Digite a data inicial (YYYY-MM-DD) ou deixe vazio:');
             const endDate = prompt('Digite a data final (YYYY-MM-DD) ou deixe vazio:');
+            const minValor = prompt('Digite o valor mínimo ou deixe vazio:');
+            const maxValor = prompt('Digite o valor máximo ou deixe vazio:');
+            const page = prompt('Digite o número da página (ex: 1, 2, 3):', 1);
+            const limit = prompt('Digite o número de registros por página:', 5);
 
-            let url = `https://cotacoes-api-fullstack.onrender.com/api/cotacoes/historico/${moeda}`;
+            let url = `https://SEU_BACKEND_RENDER.onrender.com/api/cotacoes/historico/${moeda}?page=${page}&limit=${limit}`;
 
-            if (startDate && endDate) {
-              url += `?startDate=${startDate}&endDate=${endDate}`;
-            }
+            if (startDate && endDate) url += `&startDate=${startDate}&endDate=${endDate}`;
+            if (minValor && maxValor) url += `&minValor=${minValor}&maxValor=${maxValor}`;
 
             $.get(url, (data) => {
-              console.log('Histórico de Cotações:', data);
-
-              let historicoHtml = "<h3>Histórico de Cotações</h3><table class='table table-bordered'><tr><th>ID</th><th>Moeda</th><th>Valor</th><th>Data de Inserção</th></tr>";
+              let historicoHtml = "<h3 style='color: blue;'>Histórico de Cotações</h3><table class='table table-striped'><tr><th>ID</th><th>Moeda</th><th>Valor</th><th>Data</th></tr>";
               data.forEach(cotacao => {
                 historicoHtml += `<tr>
-                      <td>${cotacao.id}</td>
-                      <td>${cotacao.moeda}</td>
-                      <td>${cotacao.valor}</td>
-                      <td>${new Date(cotacao.data_insercao).toLocaleString()}</td>
-                    </tr>`;
+            <td>${cotacao.id}</td>
+            <td>${cotacao.moeda}</td>
+            <td>${cotacao.valor}</td>
+            <td>${new Date(cotacao.data_insercao).toLocaleString()}</td>
+          </tr>`;
               });
               historicoHtml += "</table>";
-
               document.getElementById("historicoCotacoes").innerHTML = historicoHtml;
-
             }).fail(() => alert('Erro ao buscar o histórico.'));
           }}
         >
-          Buscar Histórico de Cotações
+          Buscar Histórico de Cotações (com filtros)
         </button>
-      </div>
 
-      {/* Tabela de cotações */}
+    </div>
+
+      {/* Tabela de cotações */ }
       <table className="table table-striped">
         <thead>
           <tr>
@@ -164,7 +165,7 @@ function App() {
 
       </div>
 
-    </div>
+    </div >
   );
 }
 
