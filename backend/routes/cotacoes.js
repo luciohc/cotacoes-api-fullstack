@@ -51,6 +51,31 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// Histórico de cotações
+router.get('/historico/:moeda', async (req, res) => {
+  const { moeda } = req.params;
+  const { startDate, endDate } = req.query;
+
+  try {
+    let query = 'SELECT * FROM cotacoes WHERE moeda = $1';
+    const params = [moeda];
+
+    if (startDate && endDate) {
+      query += ' AND data_insercao BETWEEN $2 AND $3';
+      params.push(startDate, endDate);
+    }
+
+    query += ' ORDER BY data_insercao DESC';
+
+    const result = await pool.query(query, params);
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Erro ao buscar histórico de cotações:', error);
+    res.status(500).json({ error: 'Erro ao buscar histórico de cotações' });
+  }
+});
+
+
 // Delete
 router.delete('/:id', async (req, res) => {
   try {
