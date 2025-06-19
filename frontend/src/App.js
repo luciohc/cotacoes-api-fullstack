@@ -93,7 +93,7 @@ function App() {
             const page = prompt('Digite o número da página (ex: 1, 2, 3):', 1);
             const limit = prompt('Digite o número de registros por página:', 5);
 
-            let url = `https://cotacoes-frontend.onrender.com/api/cotacoes/historico/${moeda}?page=${page}&limit=${limit}`;
+            let url = `https://cotacoes-api-fullstack.onrender.com/api/cotacoes/historico/${moeda}?page=${page}&limit=${limit}`;
 
             if (startDate && endDate) url += `&startDate=${startDate}&endDate=${endDate}`;
             if (minValor && maxValor) url += `&minValor=${minValor}&maxValor=${maxValor}`;
@@ -140,31 +140,7 @@ function App() {
         </tbody>
       </table>
 
-      <div id="historicoCotacoes" class="text-primary fw-bold mt-2">
-        <h2 style={{ color: 'blue' }}>Histórico de Cotações</h2>
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Moeda</th>
-              <th>Valor</th>
-              <th>Data de Inserção</th>
-            </tr>
-          </thead>
-          <tbody>
-            {historico.map((item) => (
-              <tr key={item.id}>
-                <td>{item.id}</td>
-                <td>{item.moeda}</td>
-                <td>{item.valor}</td>
-                <td>{item.data_insercao}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-      </div>
-
+      <div id="historicoCotacoes" className="mt-2"></div>
     </div >
   );
 }
