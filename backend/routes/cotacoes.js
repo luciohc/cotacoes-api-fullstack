@@ -53,15 +53,8 @@ router.put('/:id', async (req, res) => {
 
 router.get('/historico/:moeda', async (req, res) => {
   const { moeda } = req.params;
-  const {
-    startDate,
-    endDate,
-    minValor,
-    maxValor,
-    page = 1,
-    limit = 10
-  } = req.query;
-
+  const { startDate, endDate, minValor, maxValor, page = 1, limit = 10 } = req.query;
+  
   try {
     let query = 'SELECT * FROM cotacoes WHERE moeda = $1';
     const params = [moeda]  ;
@@ -89,7 +82,6 @@ router.get('/historico/:moeda', async (req, res) => {
     res.status(500).json({ error: 'Erro ao buscar histórico de cotações' });
   }
 });
-
 
 
 // Delete
