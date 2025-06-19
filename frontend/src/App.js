@@ -69,6 +69,29 @@ function App() {
         </button>
 
         <button
+          className="btn btn-info me-2"
+          onClick={() => {
+            const moeda = prompt('Digite a moeda (ex: USD, EUR):');
+            const startDate = prompt('Digite a data inicial (YYYY-MM-DD) ou deixe vazio:');
+            const endDate = prompt('Digite a data final (YYYY-MM-DD) ou deixe vazio:');
+
+            let url = `https://cotacoes-api-fullstack.onrender.com/api/cotacoes/historico/${moeda}`;
+
+            if (startDate && endDate) {
+              url += `?startDate=${startDate}&endDate=${endDate}`;
+            }
+
+            $.get(url, (data) => {
+              console.log('Histórico de Cotações:', data);
+              alert(JSON.stringify(data, null, 2)); // Exibe o resultado
+            }).fail(() => alert('Erro ao buscar o histórico.'));
+          }}
+        >
+          Buscar Histórico de Cotações
+        </button>
+
+
+        <button
           className="btn btn-warning"
           onClick={() => {
             $.get('https://cotacoes-api-fullstack.onrender.com/api/cotacoes/external/openex', () => {
