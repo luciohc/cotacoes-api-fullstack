@@ -7,6 +7,14 @@ function App() {
   const [novaMoeda, setNovaMoeda] = useState('');
   const [novoValor, setNovoValor] = useState('');
   const [historico, setHistorico] = useState([]);
+  const [filtroMoeda, setFiltroMoeda] = useState('');
+  const [filtroDataInicio, setFiltroDataInicio] = useState('');
+  const [filtroDataFim, setFiltroDataFim] = useState('');
+  const [filtroMinValor, setFiltroMinValor] = useState('');
+  const [filtroMaxValor, setFiltroMaxValor] = useState('');
+  const [filtroPage, setFiltroPage] = useState(1);
+  const [filtroLimit, setFiltroLimit] = useState(5);
+
 
   const carregarCotacoes = () => {
     $.get('https://cotacoes-api-fullstack.onrender.com/api/cotacoes', (data) => {
@@ -81,32 +89,76 @@ function App() {
           Buscar cotações do Open Exchange Rates
         </button>
 
+        <div className="mb-3">
+          <h4>Filtros de Busca do Histórico</h4>
+          <input
+            type="text"
+            className="form-control mb-2"
+            placeholder="Moeda (ex: USD, EUR)"
+            value={filtroMoeda}
+            onChange={(e) => setFiltroMoeda(e.target.value)}
+          />
+          <input
+            type="date"
+            className="form-control mb-2"
+            placeholder="Data Inicial"
+            value={filtroDataInicio}
+            onChange={(e) => setFiltroDataInicio(e.target.value)}
+          />
+          <input
+            type="date"
+            className="form-control mb-2"
+            placeholder="Data Final"
+            value={filtroDataFim}
+            onChange={(e) => setFiltroDataFim(e.target.value)}
+          />
+          <input
+            type="number"
+            className="form-control mb-2"
+            placeholder="Valor Mínimo"
+            value={filtroMinValor}
+            onChange={(e) => setFiltroMinValor(e.target.value)}
+          />
+          <input
+            type="number"
+            className="form-control mb-2"
+            placeholder="Valor Máximo"
+            value={filtroMaxValor}
+            onChange={(e) => setFiltroMaxValor(e.target.value)}
+          />
+          <input
+            type="number"
+            className="form-control mb-2"
+            placeholder="Número da Página"
+            value={filtroPage}
+            onChange={(e) => setFiltroPage(e.target.value)}
+          />
+          <input
+            type="number"
+            className="form-control mb-2"
+            placeholder="Limite de Registros por Página"
+            value={filtroLimit}
+            onChange={(e) => setFiltroLimit(e.target.value)}
+          />
+        </div>
+
         <button
-         
           className="btn btn-info"
           onClick={() => {
-            const moeda = prompt('Digite a moeda (ex: USD, EUR):');
-            const startDate = prompt('Digite a data inicial (YYYY-MM-DD) ou deixe vazio:');
-            const endDate = prompt('Digite a data final (YYYY-MM-DD) ou deixe vazio:');
-            const minValor = prompt('Digite o valor mínimo ou deixe vazio:');
-            const maxValor = prompt('Digite o valor máximo ou deixe vazio:');
-            const page = prompt('Digite o número da página (ex: 1, 2, 3):', 1);
-            const limit = prompt('Digite o número de registros por página:', 5);
+            let url = `https://cotacoes-api-fullstack.onrender.com/api/cotacoes/historico/${filtroMoeda}?page=${filtroPage}&limit=${filtroLimit}`;
 
-            let url = `https://cotacoes-api-fullstack.onrender.com/api/cotacoes/historico/${moeda}?page=${page}&limit=${limit}`;
-
-            if (startDate && endDate) url += `&startDate=${startDate}&endDate=${endDate}`;
-            if (minValor && maxValor) url += `&minValor=${minValor}&maxValor=${maxValor}`;
+            if (filtroDataInicio && filtroDataFim) url += `&startDate=${filtroDataInicio}&endDate=${filtroDataFim}`;
+            if (filtroMinValor && filtroMaxValor) url += `&minValor=${filtroMinValor}&maxValor=${filtroMaxValor}`;
 
             $.get(url, (data) => {
               let historicoHtml = "<h3 style='color: blue;'>Histórico de Cotações</h3><table class='table table-striped'><tr><th>ID</th><th>Moeda</th><th>Valor</th><th>Data</th></tr>";
               data.forEach(cotacao => {
                 historicoHtml += `<tr>
-            <td>${cotacao.id}</td>
-            <td>${cotacao.moeda}</td>
-            <td>${cotacao.valor}</td>
-            <td>${new Date(cotacao.data_insercao).toLocaleString()}</td>
-          </tr>`;
+          <td>${cotacao.id}</td>
+          <td>${cotacao.moeda}</td>
+          <td>${cotacao.valor}</td>
+          <td>${new Date(cotacao.data_insercao).toLocaleString()}</td>
+        </tr>`;
               });
               historicoHtml += "</table>";
               document.getElementById("historicoCotacoes").innerHTML = historicoHtml;
@@ -116,9 +168,9 @@ function App() {
           Buscar Histórico de Cotações (com filtros)
         </button>
 
-    </div>
+      </div>
 
-      {/* Tabela de cotações */ }
+      {/* Tabela de cotações */}
       <table className="table table-striped">
         <thead>
           <tr>
