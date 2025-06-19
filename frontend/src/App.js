@@ -139,8 +139,8 @@ function App() {
       </table>
 
       <div id="historicoCotacoes" class="text-primary fw-bold mt-2">
-        <h2 style="color: blue;">Histórico de Cotações</h2>
-        <table class="table table-striped">
+        <h2 style={{ color: 'blue' }}>Histórico de Cotações</h2>
+        <table className="table table-striped">
           <thead>
             <tr>
               <th>ID</th>
@@ -150,9 +150,17 @@ function App() {
             </tr>
           </thead>
           <tbody>
-
+            {historico.map((item) => (
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.moeda}</td>
+                <td>{item.valor}</td>
+                <td>{item.data_insercao}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
+
       </div>
 
     </div>
