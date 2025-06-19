@@ -6,6 +6,7 @@ function App() {
   const [cotacoes, setCotacoes] = useState([]);
   const [novaMoeda, setNovaMoeda] = useState('');
   const [novoValor, setNovoValor] = useState('');
+  const [historico, setHistorico] = useState([]);
 
   const carregarCotacoes = () => {
     $.get('https://cotacoes-api-fullstack.onrender.com/api/cotacoes', (data) => {
