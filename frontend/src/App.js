@@ -95,7 +95,20 @@ function App() {
 
             $.get(url, (data) => {
               console.log('Histórico de Cotações:', data);
-              alert(JSON.stringify(data, null, 2)); // Exibe o resultado
+
+              let historicoHtml = "<h3>Histórico de Cotações</h3><table class='table table-bordered'><tr><th>ID</th><th>Moeda</th><th>Valor</th><th>Data de Inserção</th></tr>";
+              data.forEach(cotacao => {
+                historicoHtml += `<tr>
+                      <td>${cotacao.id}</td>
+                      <td>${cotacao.moeda}</td>
+                      <td>${cotacao.valor}</td>
+                      <td>${new Date(cotacao.data_insercao).toLocaleString()}</td>
+                    </tr>`;
+              });
+              historicoHtml += "</table>";
+
+              document.getElementById("historicoCotacoes").innerHTML = historicoHtml;
+
             }).fail(() => alert('Erro ao buscar o histórico.'));
           }}
         >
@@ -124,6 +137,7 @@ function App() {
           ))}
         </tbody>
       </table>
+      <div id="historicoCotacoes" class="mt-4"></div>
     </div>
   );
 }
