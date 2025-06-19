@@ -93,7 +93,7 @@ function App() {
             const page = prompt('Digite o número da página (ex: 1, 2, 3):', 1);
             const limit = prompt('Digite o número de registros por página:', 5);
 
-            let url = `https://SEU_BACKEND_RENDER.onrender.com/api/cotacoes/historico/${moeda}?page=${page}&limit=${limit}`;
+            let url = `https://cotacoes-frontend.onrender.com/api/cotacoes/historico/${moeda}?page=${page}&limit=${limit}`;
 
             if (startDate && endDate) url += `&startDate=${startDate}&endDate=${endDate}`;
             if (minValor && maxValor) url += `&minValor=${minValor}&maxValor=${maxValor}`;
