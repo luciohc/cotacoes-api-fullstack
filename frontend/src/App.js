@@ -69,6 +69,18 @@ function App() {
         </button>
 
         <button
+          className="btn btn-warning"
+          onClick={() => {
+            $.get('https://cotacoes-api-fullstack.onrender.com/api/cotacoes/external/openex', () => {
+              alert('Cotações do Open Exchange Rates salvas!');
+              carregarCotacoes();
+            }).fail(() => alert('Erro ao buscar cotação do OpenEx'));
+          }}
+        >
+          Buscar cotações do Open Exchange Rates
+        </button>
+
+        <button
           className="btn btn-info me-2"
           onClick={() => {
             const moeda = prompt('Digite a moeda (ex: USD, EUR):');
@@ -88,19 +100,6 @@ function App() {
           }}
         >
           Buscar Histórico de Cotações
-        </button>
-
-
-        <button
-          className="btn btn-warning"
-          onClick={() => {
-            $.get('https://cotacoes-api-fullstack.onrender.com/api/cotacoes/external/openex', () => {
-              alert('Cotações do Open Exchange Rates salvas!');
-              carregarCotacoes();
-            }).fail(() => alert('Erro ao buscar cotação do OpenEx'));
-          }}
-        >
-          Buscar cotações do Open Exchange Rates
         </button>
       </div>
 
