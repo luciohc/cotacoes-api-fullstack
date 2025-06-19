@@ -137,7 +137,25 @@ function App() {
           ))}
         </tbody>
       </table>
-      <div id="historicoCotacoes" class="text-primary fw-bold mt-2"></div>
+ 
+     
+
+      <h2 style="color: blue;">Histórico de Cotações</h2>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Moeda</th>
+            <th>Valor</th>
+            <th>Data de Inserção</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+      </table>
+
+
     </div>
   );
 }
