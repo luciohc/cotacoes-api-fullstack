@@ -6,6 +6,10 @@ function App() {
   const [cotacoes, setCotacoes] = useState([]);
   const [novaMoeda, setNovaMoeda] = useState('');
   const [novoValor, setNovoValor] = useState('');
+  const [historico, setHistorico] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // Filtros
   const [filtroMoeda, setFiltroMoeda] = useState('');
   const [filtroDataInicio, setFiltroDataInicio] = useState('');
   const [filtroDataFim, setFiltroDataFim] = useState('');
@@ -13,8 +17,6 @@ function App() {
   const [filtroMaxValor, setFiltroMaxValor] = useState('');
   const [filtroPage, setFiltroPage] = useState(1);
   const [filtroLimit, setFiltroLimit] = useState(5);
-  const [historico, setHistorico] = useState([]);
-
 
   const carregarCotacoes = () => {
     $.get('https://cotacoes-api-fullstack.onrender.com/api/cotacoes', (data) => {
@@ -41,7 +43,6 @@ function App() {
   }, []);
 
   const buscarHistorico = () => {
-    // Validação de campos obrigatórios
     if (!filtroMoeda.trim()) {
       alert('Por favor, informe a moeda.');
       return;
@@ -59,19 +60,19 @@ function App() {
       return;
     }
 
-    const dataInicioFormatada = filtroDataInicio;
-    const dataFimFormatada = filtroDataFim;
+    setLoading(true);  // 👉 Mostra o spinner
 
     let url = `https://cotacoes-api-fullstack.onrender.com/api/cotacoes/historico/${filtroMoeda}?page=${filtroPage}&limit=${filtroLimit}`;
-    if (filtroDataInicio && filtroDataFim) url += `&startDate=${dataInicioFormatada}&endDate=${dataFimFormatada}`;
+
+    if (filtroDataInicio && filtroDataFim) url += `&startDate=${filtroDataInicio}&endDate=${filtroDataFim}`;
     if (filtroMinValor !== '') url += `&minValor=${filtroMinValor}`;
     if (filtroMaxValor !== '') url += `&maxValor=${filtroMaxValor}`;
 
-    // Limpa a div antes de exibir o novo resultado
     document.getElementById("historicoCotacoes").innerHTML = '';
 
     $.get(url, (data) => {
       setHistorico(data);
+
       let historicoHtml = "<h3 style='color: blue;'>Histórico de Cotações</h3>";
 
       if (data.length === 0) {
@@ -92,14 +93,39 @@ function App() {
       document.getElementById("historicoCotacoes").innerHTML = historicoHtml;
     }).fail((xhr) => {
       alert(`Erro ao buscar o histórico: ${xhr.responseText || 'Erro desconhecido'}`);
+    }).always(() => {
+      setLoading(false);  // 👉 Oculta o spinner após resposta
     });
+  };
+
+  const exportarCSV = () => {
+    if (historico.length === 0) {
+      alert('Nenhum dado de histórico para exportar.');
+      return;
+    }
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "ID,Moeda,Valor,Data de Inserção\n";
+
+    historico.forEach(cotacao => {
+      const row = `${cotacao.id},${cotacao.moeda},${cotacao.valor},${new Date(cotacao.data_insercao).toLocaleString()}`;
+      csvContent += row + "\n";
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "historico_cotacoes.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
     <div className="container mt-4">
       <h2 className="text-primary">Cadastro de Cotações de Moedas</h2>
 
-      {/* Formulário de nova cotação */}
+      {/* Formulário de Nova Cotação */}
       <div className="mb-3">
         <input
           type="text"
@@ -118,7 +144,7 @@ function App() {
         <button className="btn btn-success" onClick={adicionarCotacao}>Adicionar Cotação</button>
       </div>
 
-      {/* Botões de fontes externas */}
+      {/* Botões Externos */}
       <div className="mb-3">
         <button
           className="btn btn-info me-2"
@@ -200,38 +226,21 @@ function App() {
           Buscar Histórico de Cotações (com filtros)
         </button>
 
-        <button
-          className="btn btn-secondary ms-2"
-          onClick={() => {
-            if (historico.length === 0) {
-              alert('Nenhum dado de histórico para exportar.');
-              return;
-            }
-
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "ID,Moeda,Valor,Data de Inserção\n";
-
-            historico.forEach(cotacao => {
-              const row = `${cotacao.id},${cotacao.moeda},${cotacao.valor},${new Date(cotacao.data_insercao).toLocaleString()}`;
-              csvContent += row + "\n";
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "historico_cotacoes.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }}
-        >
+        <button className="btn btn-secondary ms-2" onClick={exportarCSV}>
           Exportar Histórico (CSV)
         </button>
-
-
       </div>
 
-      {/* Tabela de cotações */}
+      {/* Spinner de Loading */}
+      {loading && (
+        <div className="text-center my-3">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Carregando...</span>
+          </div>
+        </div>
+      )}
+
+      {/* Tabela de Cotações Atuais */}
       <table className="table table-striped">
         <thead>
           <tr>
@@ -253,6 +262,7 @@ function App() {
         </tbody>
       </table>
 
+      {/* Resultado da busca histórica */}
       <div id="historicoCotacoes" className="mt-2"></div>
     </div>
   );
