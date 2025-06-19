@@ -13,6 +13,8 @@ function App() {
   const [filtroMaxValor, setFiltroMaxValor] = useState('');
   const [filtroPage, setFiltroPage] = useState(1);
   const [filtroLimit, setFiltroLimit] = useState(5);
+  const [historico, setHistorico] = useState([]);
+
 
   const carregarCotacoes = () => {
     $.get('https://cotacoes-api-fullstack.onrender.com/api/cotacoes', (data) => {
